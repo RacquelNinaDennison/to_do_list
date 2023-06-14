@@ -12,6 +12,14 @@ function App() {
 		});
 	}
 
+	function deleteItem(id) {
+		updateNotes((prevNotes) => {
+			return prevNotes.filter((_notes, index) => {
+				return index !== id;
+			});
+		});
+	}
+
 	return (
 		<div>
 			<Header />
@@ -23,10 +31,10 @@ function App() {
 						key={index}
 						title={note.title}
 						content={note.content}
+						deleteItem={deleteItem}
 					/>
 				);
 			})}
-			<Note key={1} title='Note title' content='Note content' />
 			<Footer />
 		</div>
 	);
