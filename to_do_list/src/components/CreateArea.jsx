@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const CreateArea = () => {
+const CreateArea = (props) => {
 	const [note, setNote] = useState({ title: "", content: "" });
 	function handleNoteMaking(e) {
 		const { name, value } = e.target;
@@ -10,6 +10,10 @@ const CreateArea = () => {
 				[name]: value,
 			};
 		});
+	}
+	function handleButtonSubmission(event) {
+		props.updateNote(note);
+		event.preventDefault();
 	}
 	return (
 		<div>
@@ -25,9 +29,9 @@ const CreateArea = () => {
 					placeholder='Take a note...'
 					rows='3'
 					value={note.content}
-					onChange={handleNoteMaking}
+					onChange={(e) => handleNoteMaking(e)}
 				/>
-				<button>Add</button>
+				<button onClick={handleButtonSubmission}>Add</button>
 			</form>
 		</div>
 	);
