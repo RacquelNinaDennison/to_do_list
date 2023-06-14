@@ -13,6 +13,7 @@ function App() {
 	}
 
 	function deleteItem(id) {
+    
 		updateNotes((prevNotes) => {
 			return prevNotes.filter((_notes, index) => {
 				return index !== id;

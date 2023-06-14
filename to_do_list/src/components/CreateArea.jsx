@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import Fab from "@mui/material/Fab";
+import Zoom from "@mui/material/Zoom";
 
 const CreateArea = (props) => {
 	const [note, setNote] = useState({ title: "", content: "" });
+	const [takingNote, setTakingNote] = useState(false);
 
 	function handleNoteMaking(event) {
 		const { name, value } = event.target;
@@ -19,21 +23,31 @@ const CreateArea = (props) => {
 	}
 	return (
 		<div>
-			<form>
+			<form className='create-note'>
 				<input
 					name='title'
-					placeholder='Title'
-					value={note.title}
+					placeholder={takingNote ? "Title" : "Start Taking notes"}
+					vluealue={note.title}
 					onChange={handleNoteMaking}
+					onClick={() => {
+						setTakingNote(true);
+					}}
 				/>
-				<textarea
-					name='content'
-					placeholder='Take a note...'
-					rows='3'
-					value={note.content}
-					onChange={handleNoteMaking}
-				/>
-				<button onClick={handleButtonSubmission}>Add</button>
+				{takingNote && (
+					<textarea
+						name='content'
+						placeholder='Take a note...'
+						rows={takingNote ? "3" : "1"}
+						value={note.content}
+						onChange={handleNoteMaking}
+					/>
+				)}
+
+				<Zoom in={takingNote}>
+					<Fab onClick={handleButtonSubmission}>
+						<AddCircleOutlineIcon />
+					</Fab>
+				</Zoom>
 			</form>
 		</div>
 	);
