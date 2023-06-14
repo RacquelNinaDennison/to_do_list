@@ -2,8 +2,9 @@ import React, { useState } from "react";
 
 const CreateArea = (props) => {
 	const [note, setNote] = useState({ title: "", content: "" });
-	function handleNoteMaking(e) {
-		const { name, value } = e.target;
+
+	function handleNoteMaking(event) {
+		const { name, value } = event.target;
 		setNote((prevValue) => {
 			return {
 				...prevValue,
@@ -12,8 +13,9 @@ const CreateArea = (props) => {
 		});
 	}
 	function handleButtonSubmission(event) {
-		props.updateNote(note);
 		event.preventDefault();
+		props.updateNote(note);
+		setNote({ title: "", content: "" });
 	}
 	return (
 		<div>
@@ -29,7 +31,7 @@ const CreateArea = (props) => {
 					placeholder='Take a note...'
 					rows='3'
 					value={note.content}
-					onChange={(e) => handleNoteMaking(e)}
+					onChange={handleNoteMaking}
 				/>
 				<button onClick={handleButtonSubmission}>Add</button>
 			</form>
