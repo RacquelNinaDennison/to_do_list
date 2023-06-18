@@ -3,6 +3,7 @@ $header-h1-color: #fff;
 $footer-paragraph-color: #ccc;
 $button-color: orange;
 $box-shawdow-color: rgba(0, 0, 0, 0.3);
+$hover-button: #fff;
 
 // image background url
 $url: "https://www.transparenttextures.com/patterns/climpek.png";
@@ -12,11 +13,11 @@ $url: "https://www.transparenttextures.com/patterns/climpek.png";
 // input and textarea
 
 @mixin textBoxes {
-	width: 75%;
+	width: 100%;
 	padding: 4px;
 	font-size: 1.2em;
 	font-family: inherit;
 	resize: none;
 	border-color: $button-color;
-    border-radius: 15px;
+	border-radius: 15px;
 }

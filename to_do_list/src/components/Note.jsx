@@ -12,6 +12,8 @@ const Note = (props) => {
 	}
 
 	function handleEdit() {
+		setEditedContent("");
+		setEditedTitle("");
 		setIsEditing(true);
 	}
 
@@ -20,7 +22,15 @@ const Note = (props) => {
 		// For example, you can pass the editedTitle and editedContent to a function in the parent component to update the notes array.
 
 		// After saving, exit the edit mode
-		setIsEditing(false);
+		if (editedTitle.trim() !== "" || editedContent.trim() !== "") {
+			setIsEditing(false);
+			props.editedNote(
+				{ title: editedTitle, content: editedContent },
+				props.id
+			);
+		} else {
+			alert("Input fields cannot be empty");
+		}
 	}
 
 	function handleCancel() {
@@ -52,7 +62,7 @@ const Note = (props) => {
 					<textarea
 						value={editedContent}
 						onChange={(e) => setEditedContent(e.target.value)}
-						className="textarea"
+						className='textarea'
 					/>
 					<button onClick={handleSave}>Save</button>
 					<button onClick={handleCancel}>Cancel</button>

@@ -107,3 +107,45 @@ form.create-note {
 .textarea {
 	@include textBoxes;
 }
+
+.card {
+	position: relative;
+	width: 480px;
+	margin: 30px auto 20px auto;
+	background: #fff;
+	padding: 15px;
+	border-radius: 7px;
+	box-shadow: 0 1px 5px rgb(138, 137, 137);
+	& h1 {
+		text-align: center;
+	}
+	& p {
+		text-align: center;
+	}
+	& button {
+		position: absolute;
+		right: 18px;
+		bottom: -18px;
+		background: $button-color;
+		color: #fff;
+		border: none;
+		border-radius: 50%;
+		width: 50px;
+		height: 50px;
+		box-shadow: 0 1px 3px $box-shawdow-color;
+		cursor: pointer;
+		outline: none;
+
+		& :hover {
+			background: $hover-button;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+		}
+	}
+	&:hover {
+		box-shadow: 0 8px 16px 0 $box-shawdow-color;
+	}
+}
+
+.container {
+	padding: 2px 16px;
+}

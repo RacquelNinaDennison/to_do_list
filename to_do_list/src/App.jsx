@@ -18,7 +18,10 @@ function App() {
 			return [...prevValue, note];
 		});
 	}
-
+	function editedNote(note, id) {
+		deleteItem(id);
+		updateNote(note);
+	}
 	function deleteItem(id) {
 		updateNotes((prevNotes) => {
 			return prevNotes.filter((_notes, index) => {
@@ -42,6 +45,7 @@ function App() {
 						title={note.title}
 						content={note.content}
 						deleteItem={deleteItem}
+						editedNote={editedNote}
 					/>
 				);
 			})}

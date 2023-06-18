@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
+import { ErrorText } from "./ErrorText";
 
 const CreateArea = (props) => {
 	const [note, setNote] = useState({ title: "", content: "" });
 	const [takingNote, setTakingNote] = useState(false);
+	const [emptyField, setEmptyField] = useState(false);
 
 	function handleNoteMaking(event) {
 		const { name, value } = event.target;
@@ -16,12 +18,22 @@ const CreateArea = (props) => {
 			};
 		});
 	}
+
 	function handleButtonSubmission(event) {
 		event.preventDefault();
-		props.updateNote(note);
-		setNote({ title: "", content: "" });
+		// Check if either the title or content is empty
+		if (note.title.trim() !== "" || note.content.trim() !== "") {
+			props.updateNote(note);
+			setNote({ title: "", content: "" });
+		} else {
+			setEmptyField(true);
+		}
 	}
-	return (
+	function exitButton() {
+		console.log("exit burron ");
+		setEmptyField(false);
+	}
+	return !emptyField ? (
 		<div>
 			<form className='create-note'>
 				<input
@@ -49,6 +61,13 @@ const CreateArea = (props) => {
 					</Fab>
 				</Zoom>
 			</form>
+		</div>
+	) : (
+		<div>
+			<ErrorText
+				error={"Empty title or empty content field is not allowed."}
+				exitButton={exitButton}
+			/>
 		</div>
 	);
 };
