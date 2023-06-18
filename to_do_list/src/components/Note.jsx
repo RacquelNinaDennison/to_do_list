@@ -47,10 +47,12 @@ const Note = (props) => {
 							console.log(e.target.value);
 							setEditedTitle(e.target.value);
 						}}
+						className='input'
 					/>
 					<textarea
 						value={editedContent}
 						onChange={(e) => setEditedContent(e.target.value)}
+						className="textarea"
 					/>
 					<button onClick={handleSave}>Save</button>
 					<button onClick={handleCancel}>Cancel</button>

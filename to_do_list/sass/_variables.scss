@@ -8,3 +8,15 @@ $box-shawdow-color: rgba(0, 0, 0, 0.3);
 $url: "https://www.transparenttextures.com/patterns/climpek.png";
 
 // font styles variables
+
+// input and textarea
+
+@mixin textBoxes {
+	width: 75%;
+	padding: 4px;
+	font-size: 1.2em;
+	font-family: inherit;
+	resize: none;
+	border-color: $button-color;
+    border-radius: 15px;
+}

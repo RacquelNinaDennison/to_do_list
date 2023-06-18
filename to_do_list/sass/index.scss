@@ -58,7 +58,7 @@ footer {
 		margin-right: 10px;
 		color: $button-color;
 		border: none;
-		width: 36px;
+		width: 50px;
 		height: 36px;
 		cursor: pointer;
 		outline: none;
@@ -99,4 +99,11 @@ form.create-note {
 		cursor: pointer;
 		outline: none;
 	}
+}
+.input {
+	@include textBoxes;
+	margin-bottom: 5%;
+}
+.textarea {
+	@include textBoxes;
 }
