@@ -27,7 +27,7 @@ const CreateArea = (props) => {
 				<input
 					name='title'
 					placeholder={takingNote ? "Title" : "Start Taking notes"}
-					vluealue={note.title}
+					value={note.title}
 					onChange={handleNoteMaking}
 					onClick={() => {
 						setTakingNote(true);
