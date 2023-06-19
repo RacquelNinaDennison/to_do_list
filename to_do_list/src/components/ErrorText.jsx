@@ -6,13 +6,11 @@ export const ErrorText = (props) => {
 	}
 	return (
 		<div className='card'>
-			<div className='container'>
-				<h1>
-					<b>Error</b>
-				</h1>
-				<p>{props.error}</p>
-				<button onClick={handleExitButton}>Exit</button>
-			</div>
+			<h1>
+				<b>Error</b>
+			</h1>
+			<p>{props.error}</p>
+			<button onClick={handleExitButton}>Exit</button>
 		</div>
 	);
 };

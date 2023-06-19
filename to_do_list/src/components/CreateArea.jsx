@@ -21,7 +21,6 @@ const CreateArea = (props) => {
 
 	function handleButtonSubmission(event) {
 		event.preventDefault();
-		// Check if either the title or content is empty
 		if (note.title.trim() !== "" || note.content.trim() !== "") {
 			props.updateNote(note);
 			setNote({ title: "", content: "" });

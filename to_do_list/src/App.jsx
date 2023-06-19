@@ -3,13 +3,20 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Note from "./components/Note";
 import CreateArea from "./components/CreateArea";
+import Login from "./components/Login/Login";
 
 function App() {
 	const [notes, updateNotes] = useState([]);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [users, setUsers] = useState([{ name: "", password: "" }]);
 	useEffect(() => {
 		const storedNotes = localStorage.getItem("notes");
-		if (storedNotes) {
-			updateNotes(JSON.parse(storedNotes));
+		const isLoggedIn = localStorage.getItem("isLoggedIn");
+		if (isLoggedIn === "1") {
+			setIsLoggedIn(true);
+			if (storedNotes) {
+				updateNotes(JSON.parse(storedNotes));
+			}
 		}
 	}, []);
 	function updateNote(note) {
@@ -33,22 +40,37 @@ function App() {
 		localStorage.setItem("notes", JSON.stringify(updatedNotes));
 	}
 
+	const loginHandler = (email, password) => {
+		localStorage.setItem("isLoggedIn", "1");
+		setIsLoggedIn(true);
+	};
+
+	const logoutHandler = () => {
+		console.log("Handler");
+		localStorage.removeItem("isLoggedIn");
+		setIsLoggedIn(false);
+	};
 	return (
 		<div>
-			<Header />
-			<CreateArea updateNote={updateNote} />
-			{notes.map((note, index) => {
-				return (
-					<Note
-						id={index}
-						key={index}
-						title={note.title}
-						content={note.content}
-						deleteItem={deleteItem}
-						editedNote={editedNote}
-					/>
-				);
-			})}
+			{isLoggedIn && (
+				<>
+					<Header logoutHandler={logoutHandler} />
+					<CreateArea updateNote={updateNote} />
+					{notes.map((note, index) => {
+						return (
+							<Note
+								id={index}
+								key={index}
+								title={note.title}
+								content={note.content}
+								deleteItem={deleteItem}
+								editedNote={editedNote}
+							/>
+						);
+					})}
+				</>
+			)}
+			{!isLoggedIn && <Login onLogin={loginHandler} />}
 			<Footer />
 		</div>
 	);

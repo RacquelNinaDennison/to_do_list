@@ -11,13 +11,28 @@ body {
 }
 
 header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	background-color: $header-color;
 	margin: auto -16px;
 	padding: 16px 32px;
 	box-shadow: 0 0 10px 0 $box-shawdow-color;
-	& h1 {
+	
+	h1 {
 		color: $header-h1-color;
 		font-weight: 200;
+	}
+
+	& button {
+		border: none;
+		background-color: $header-color;
+		color: $header-h1-color;
+		border-radius: 25px;
+		padding: 15px;
+		&:hover {
+			border: solid $header-h1-color;
+		}
 	}
 }
 
@@ -137,11 +152,6 @@ form.create-note {
 		box-shadow: 0 1px 3px $box-shawdow-color;
 		cursor: pointer;
 		outline: none;
-
-		& :hover {
-			background: $hover-button;
-			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-		}
 	}
 	&:hover {
 		box-shadow: 0 8px 16px 0 $box-shawdow-color;

@@ -6,22 +6,20 @@ const Note = (props) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedTitle, setEditedTitle] = useState(props.title);
 	const [editedContent, setEditedContent] = useState(props.content);
+	const [editingText, setEditingText] = useState({ title: "", content: "" });
 
 	function handleDelete() {
 		props.deleteItem(props.id);
 	}
 
 	function handleEdit() {
-		setEditedContent("");
+		setEditingText({ title: editedTitle, content: editedContent });
 		setEditedTitle("");
+		setEditedContent("");
 		setIsEditing(true);
 	}
 
 	function handleSave() {
-		// Perform the necessary actions to save the edited note
-		// For example, you can pass the editedTitle and editedContent to a function in the parent component to update the notes array.
-
-		// After saving, exit the edit mode
 		if (editedTitle.trim() !== "" || editedContent.trim() !== "") {
 			setIsEditing(false);
 			props.editedNote(
@@ -29,20 +27,14 @@ const Note = (props) => {
 				props.id
 			);
 		} else {
+			// this needs to be styled better
 			alert("Input fields cannot be empty");
 		}
 	}
 
 	function handleCancel() {
-		// Revert the changes made during editing
-		setEditedTitle((prevState) => {
-			return prevState;
-		});
-		setEditedContent((prevState) => {
-			return prevState;
-		});
-
-		// Exit the edit mode
+		setEditedTitle(editingText.title);
+		setEditedContent(editingText.content);
 		setIsEditing(false);
 	}
 
