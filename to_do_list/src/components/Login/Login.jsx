@@ -10,6 +10,8 @@ const Login = (props) => {
 	const [enteredPassword, setEnteredPassword] = useState("");
 	const [passwordIsValid, setPasswordIsValid] = useState();
 	const [formIsValid, setFormIsValid] = useState(false);
+	const [login, setLogin] = useState(false);
+	const [register, setRegister] = useState(false);
 
 	const emailChangeHandler = (event) => {
 		setEnteredEmail(event.target.value);
@@ -37,7 +39,16 @@ const Login = (props) => {
 
 	const submitHandler = (event) => {
 		event.preventDefault();
-		props.onLogin(enteredEmail, enteredPassword);
+		if (login) {
+			console.log("login");
+			props.onLogin(enteredEmail, enteredPassword);
+			setLogin(false);
+		}
+		if (register) {
+			console.log("register");
+			props.onRegister(enteredEmail, enteredPassword);
+			setRegister(false);
+		}
 	};
 
 	return (
@@ -72,8 +83,25 @@ const Login = (props) => {
 					/>
 				</div>
 				<div className={classes.actions}>
-					<Button type='submit' className={classes.btn} disabled={!formIsValid}>
+					<Button
+						type='submit'
+						className={classes.btn}
+						disabled={!formIsValid}
+						onClick={() => {
+							setLogin(true);
+						}}
+					>
 						Login
+					</Button>
+					<Button
+						type='submit'
+						className={classes.btn}
+						disabled={!formIsValid}
+						onClick={() => {
+							setRegister(true);
+						}}
+					>
+						Register
 					</Button>
 				</div>
 			</form>

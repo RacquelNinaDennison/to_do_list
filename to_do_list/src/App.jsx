@@ -1,14 +1,56 @@
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
+import { Toaster, toast } from "react-hot-toast";
 import Footer from "./components/Footer";
 import Note from "./components/Note";
 import CreateArea from "./components/CreateArea";
 import Login from "./components/Login/Login";
 
 function App() {
+	const [user, setUser] = useState("");
+	const sendMessageLogin = (email, password) => {
+		fetch("http://localhost:3000/register", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: email,
+				password: password,
+			}),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data.message);
+				const userFeedback = data.message;
+				setUser(userFeedback);
+
+				// Handle data
+			});
+	};
+	const sendMessageRegister = (email, password) => {
+		fetch("http://localhost:3000/register", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: email,
+				password: password,
+			}),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data.message);
+				const userFeedback = data.message;
+				setUser(userFeedback);
+
+				// Handle data
+			});
+	};
 	const [notes, updateNotes] = useState([]);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [users, setUsers] = useState([{ name: "", password: "" }]);
+
 	useEffect(() => {
 		const storedNotes = localStorage.getItem("notes");
 		const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -19,6 +61,7 @@ function App() {
 			}
 		}
 	}, []);
+
 	function updateNote(note) {
 		updateNotes((prevValue) => {
 			localStorage.setItem("notes", JSON.stringify([...prevValue, note]));
@@ -40,9 +83,25 @@ function App() {
 		localStorage.setItem("notes", JSON.stringify(updatedNotes));
 	}
 
-	const loginHandler = (email, password) => {
-		localStorage.setItem("isLoggedIn", "1");
-		setIsLoggedIn(true);
+	const loginHandler = async (email, password) => {
+		await sendMessageLogin(email, password);
+		if (user == "1") {
+			localStorage.setItem("isLoggedIn", "1");
+			setIsLoggedIn(true);
+		} else {
+			alert("Invalid Credentials, try again");
+		}
+	};
+
+	const registerHandler = async (email, password) => {
+		await sendMessageRegister(email, password);
+		if (user == "1") {
+			localStorage.setItem("isLoggedIn", "1");
+			setIsLoggedIn(true);
+		} else {
+			toast("Invalid Credentials, try again");
+			alert("Invalid Credentials, try again");
+		}
 	};
 
 	const logoutHandler = () => {
@@ -70,7 +129,9 @@ function App() {
 					})}
 				</>
 			)}
-			{!isLoggedIn && <Login onLogin={loginHandler} />}
+			{!isLoggedIn && (
+				<Login onLogin={loginHandler} onRegister={registerHandler} />
+			)}
 			<Footer />
 		</div>
 	);
