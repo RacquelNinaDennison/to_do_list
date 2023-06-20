@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
+import toast, { Toaster } from "react-hot-toast";
 
 const Note = (props) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedTitle, setEditedTitle] = useState(props.title);
 	const [editedContent, setEditedContent] = useState(props.content);
 	const [editingText, setEditingText] = useState({ title: "", content: "" });
+	const [empty, setEmpty] = useState(false);
 
 	function handleDelete() {
 		props.deleteItem(props.id);
@@ -17,6 +19,7 @@ const Note = (props) => {
 		setEditedTitle("");
 		setEditedContent("");
 		setIsEditing(true);
+		setEmpty(false);
 	}
 
 	function handleSave() {
@@ -28,7 +31,11 @@ const Note = (props) => {
 			);
 		} else {
 			// this needs to be styled better
-			alert("Input fields cannot be empty");
+			setEmpty(true);
+			toast("Fields cannot be empty");
+			return () => {
+				toast.dismiss(toastId); // Remove the toast when component unmounts
+			};
 		}
 	}
 
@@ -57,6 +64,7 @@ const Note = (props) => {
 						className='textarea'
 					/>
 					<button onClick={handleSave}>Save</button>
+					{empty ? <Toaster /> : ""}
 					<button onClick={handleCancel}>Cancel</button>
 				</>
 			) : (

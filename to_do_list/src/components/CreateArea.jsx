@@ -3,6 +3,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
 import { ErrorText } from "./ErrorText";
+import toast, { Toaster } from "react-hot-toast";
 
 const CreateArea = (props) => {
 	const [note, setNote] = useState({ title: "", content: "" });
@@ -32,6 +33,7 @@ const CreateArea = (props) => {
 		console.log("exit burron ");
 		setEmptyField(false);
 	}
+	const notify = () => toast("Here is your toast.");
 	return !emptyField ? (
 		<div>
 			<form className='create-note'>
@@ -63,10 +65,7 @@ const CreateArea = (props) => {
 		</div>
 	) : (
 		<div>
-			<ErrorText
-				error={"Empty title or empty content field is not allowed."}
-				exitButton={exitButton}
-			/>
+			<ErrorText exitButton={exitButton} />
 		</div>
 	);
 };
