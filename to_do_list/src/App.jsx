@@ -1,55 +1,55 @@
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import { Toaster, toast } from "react-hot-toast";
+import axios from "axios";
 import Footer from "./components/Footer";
 import Note from "./components/Note";
 import CreateArea from "./components/CreateArea";
+import { useMutation } from "react-query";
 import Login from "./components/Login/Login";
 
 function App() {
 	const [user, setUser] = useState("");
-	const sendMessageLogin = (email, password) => {
-		fetch("http://localhost:3000/register", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				name: email,
-				password: password,
-			}),
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				console.log(data.message);
-				const userFeedback = data.message;
-				setUser(userFeedback);
-
-				// Handle data
-			});
-	};
-	const sendMessageRegister = (email, password) => {
-		fetch("http://localhost:3000/register", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				name: email,
-				password: password,
-			}),
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				console.log(data.message);
-				const userFeedback = data.message;
-				setUser(userFeedback);
-
-				// Handle data
-			});
-	};
 	const [notes, updateNotes] = useState([]);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	// data mutations - log in users
+	const mutation = useMutation(
+		async (logiIn) => {
+			return await axios.post("http://localhost:3001/auth/", logiIn);
+		},
+		{
+			onSuccess: (data) => {
+				console.log(data.data.status);
+				setUser(data.data.status);
+				if (data.data.status === "1") {
+					localStorage.setItem("isLoggedIn", "1");
+					setIsLoggedIn(true);
+				} else {
+					toast("Invalid Credentials, try again");
+				}
+			},
+		}
+	);
+
+	const sendMessageRegister = (email, password) => {
+		fetch("http://localhost:3001/auth/register", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: email,
+				password: password,
+			}),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data.message);
+				const userFeedback = data.message;
+				setUser(userFeedback);
+			});
+	};
 
 	useEffect(() => {
 		const storedNotes = localStorage.getItem("notes");
@@ -83,14 +83,8 @@ function App() {
 		localStorage.setItem("notes", JSON.stringify(updatedNotes));
 	}
 
-	const loginHandler = async (email, password) => {
-		await sendMessageLogin(email, password);
-		if (user == "1") {
-			localStorage.setItem("isLoggedIn", "1");
-			setIsLoggedIn(true);
-		} else {
-			alert("Invalid Credentials, try again");
-		}
+	const loginHandler = (email, password) => {
+		mutation.mutate({ name: email, password: password });
 	};
 
 	const registerHandler = async (email, password) => {
@@ -100,17 +94,17 @@ function App() {
 			setIsLoggedIn(true);
 		} else {
 			toast("Invalid Credentials, try again");
-			alert("Invalid Credentials, try again");
 		}
 	};
 
 	const logoutHandler = () => {
-		console.log("Handler");
 		localStorage.removeItem("isLoggedIn");
 		setIsLoggedIn(false);
 	};
+
 	return (
 		<div>
+			<Toaster />
 			{isLoggedIn && (
 				<>
 					<Header logoutHandler={logoutHandler} />
