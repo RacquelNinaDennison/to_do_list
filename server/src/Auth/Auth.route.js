@@ -1,20 +1,12 @@
-import { Router } from 'express';
-import passport from 'passport';
-import express from 'express';
+import { Router } from "express";
+import express from "express";
 
-import { createUser, getUser } from '../controllers/auth.controller';
-import { verifyUser } from '../lib/auth';
+import { createUser, checkUser } from "./Auth.controller.js";
 
 export const authRoute = Router();
 authRoute.use(express.json());
 authRoute.use(express.urlencoded({ extended: true }));
+authRoute.post("/auth/", checkUser);
+authRoute.post("/auth/register", createUser);
 
-// in postman, this says signup in the route
-
-authRoute.post('/auth/signin', passport.authenticate('signin'), getUser);
-authRoute.post('/auth/signup', createUser);
-
-authRoute.get('/testing', verifyUser, (req, res) => {
-  console.log(req.user);
-  res.send(req.user);
-});
+export default authRoute;
