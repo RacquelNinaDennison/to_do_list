@@ -19,6 +19,30 @@ const CreateArea = (props) => {
 	const [note, setNote] = useState({ title: "", content: "" });
 	const [takingNote, setTakingNote] = useState(false);
 	const [emptyField, setEmptyField] = useState(false);
+	const userId = localStorage.getItem("userID");
+
+	const { isLoading, error, data, isSuccess } = useQuery("getNotes", getNotes);
+	if (isLoading) {
+		return <h1>Loading</h1>;
+	}
+
+	if (error) {
+		return "Error";
+	}
+
+	const createNoteMutation = useMutation(
+		(content) => {
+			return axios.post(`http://localhost:3000/note/${userId}`, content);
+		},
+		{
+			onSuccess: (data) => {
+				queryClient.invalidateQueries(["getNotes"]);
+			},
+			onError: (message) => {
+				console.log(message);
+			},
+		}
+	);
 
 	const deleteMutation = useMutation(
 		(id) => {
@@ -34,14 +58,6 @@ const CreateArea = (props) => {
 			},
 		}
 	);
-	const { isLoading, error, data, isSuccess } = useQuery("getNotes", getNotes);
-	if (isLoading) {
-		return <h1>Loading</h1>;
-	}
-
-	if (error) {
-		return "Error";
-	}
 
 	const handleDelete = (id) => {
 		deleteMutation.mutateAsync(id);
@@ -60,7 +76,7 @@ const CreateArea = (props) => {
 	function handleButtonSubmission(event) {
 		event.preventDefault();
 		if (note.title.trim() !== "" || note.content.trim() !== "") {
-			props.updateNote(note);
+			createNoteMutation.mutate(note); // call the mutation to update the note
 			setNote({ title: "", content: "" });
 		} else {
 			setEmptyField(true);
