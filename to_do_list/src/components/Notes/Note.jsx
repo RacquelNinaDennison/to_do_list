@@ -9,7 +9,15 @@ const Note = (props) => {
 	const [editedContent, setEditedContent] = useState(props.content);
 	const [editingText, setEditingText] = useState({ title: "", content: "" });
 	const [empty, setEmpty] = useState(false);
+	const [notes, setNotes] = useState([]);
 
+
+
+
+
+
+
+	
 	function handleDelete() {
 		props.deleteItem(props.id);
 	}
@@ -30,12 +38,8 @@ const Note = (props) => {
 				props.id
 			);
 		} else {
-			// this needs to be styled better
 			setEmpty(true);
 			toast("Fields cannot be empty");
-			return () => {
-				toast.dismiss(toastId); // Remove the toast when component unmounts
-			};
 		}
 	}
 

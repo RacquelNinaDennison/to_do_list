@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
-import { ErrorText } from "./ErrorText";
+import { ErrorText } from "../Error/ErrorText";
 import toast, { Toaster } from "react-hot-toast";
 
 const CreateArea = (props) => {
@@ -33,7 +33,7 @@ const CreateArea = (props) => {
 		console.log("exit burron ");
 		setEmptyField(false);
 	}
-	const notify = () => toast("Here is your toast.");
+
 	return !emptyField ? (
 		<div>
 			<form className='create-note'>

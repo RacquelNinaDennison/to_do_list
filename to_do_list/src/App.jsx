@@ -2,29 +2,32 @@ import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
-import Footer from "./components/Footer";
-import Note from "./components/Note";
-import CreateArea from "./components/CreateArea";
+import Footer from "./components/Footer/Footer";
+import Note from "./components/Notes/Note";
+import CreateArea from "./components/TextArea/CreateArea";
 import { useMutation } from "react-query";
 import Login from "./components/Login/Login";
 
 function App() {
-	const [user, setUser] = useState("");
+	const [userId, setUserId] = useState(null);
 	const [notes, updateNotes] = useState([]);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	// data mutations - log in users
-	const mutation = useMutation(
-		async (logiIn) => {
-			return await axios.post("http://localhost:3001/auth/", logiIn);
+	// const noteMutation = useMutation(async (note) => {
+	// 	return await axios.get("http://localhost:3000/note/:{userId}/");
+	// });
+	const mutationSign = useMutation(
+		async (login) => {
+			console.log("hello");
+			return await axios.post("http://localhost:3000/auth/", login);
 		},
 		{
 			onSuccess: (data) => {
-				console.log(data.data.status);
-				setUser(data.data.status);
 				if (data.data.status === "1") {
 					localStorage.setItem("isLoggedIn", "1");
 					setIsLoggedIn(true);
+					setUserId(data.data.user.id);
 				} else {
 					toast("Invalid Credentials, try again");
 				}
@@ -32,24 +35,20 @@ function App() {
 		}
 	);
 
-	const sendMessageRegister = (email, password) => {
-		fetch("http://localhost:3001/auth/register", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
+	const mutationRegister = useMutation(
+		async (register) => {
+			return await axios.post("http://localhost:3000/auth/register", register);
+		},
+		{
+			onSuccess: (data) => {
+				if (data.data.status === "1") {
+					toast("Successfully registered. Login with credentials");
+				} else {
+					toast("Error occured. Try again");
+				}
 			},
-			body: JSON.stringify({
-				name: email,
-				password: password,
-			}),
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				console.log(data.message);
-				const userFeedback = data.message;
-				setUser(userFeedback);
-			});
-	};
+		}
+	);
 
 	useEffect(() => {
 		const storedNotes = localStorage.getItem("notes");
@@ -84,17 +83,11 @@ function App() {
 	}
 
 	const loginHandler = (email, password) => {
-		mutation.mutate({ name: email, password: password });
+		mutationSign.mutate({ name: email, password: password });
 	};
 
 	const registerHandler = async (email, password) => {
-		await sendMessageRegister(email, password);
-		if (user == "1") {
-			localStorage.setItem("isLoggedIn", "1");
-			setIsLoggedIn(true);
-		} else {
-			toast("Invalid Credentials, try again");
-		}
+		mutationRegister.mutate({ name: email, password: password });
 	};
 
 	const logoutHandler = () => {
@@ -108,23 +101,16 @@ function App() {
 			{isLoggedIn && (
 				<>
 					<Header logoutHandler={logoutHandler} />
-					<CreateArea updateNote={updateNote} />
-					{notes.map((note, index) => {
-						return (
-							<Note
-								id={index}
-								key={index}
-								title={note.title}
-								content={note.content}
-								deleteItem={deleteItem}
-								editedNote={editedNote}
-							/>
-						);
-					})}
+					<CreateArea updateNote={updateNote} userId={userId} />
+					<Note userId={userId} />
 				</>
 			)}
 			{!isLoggedIn && (
-				<Login onLogin={loginHandler} onRegister={registerHandler} />
+				<Login
+					onLogin={loginHandler}
+					onRegister={registerHandler}
+					isLoading={mutationSign}
+				/>
 			)}
 			<Footer />
 		</div>

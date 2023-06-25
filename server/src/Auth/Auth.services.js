@@ -1,5 +1,4 @@
 import { prisma } from "../../utils.js";
-import { users } from "../../database/users.js";
 
 export const registerUser = async (name, password) => {
 	// first check that they are not already registered in the database
@@ -11,17 +10,22 @@ export const registerUser = async (name, password) => {
 	});
 
 	console.log(user);
-	return "1";
+	return user;
 };
 
-export const validateUser = (name, password) => {
+export const validateUser = async (name, password) => {
 	// Find the user object that matches the provided username
-	const user = users.find((user) => user.name === name);
-	console.log(user);
-
+	const user = await prisma.user.findUnique({
+		where: {
+			name: name,
+		},
+	});
+	console.log(user)
 	// Check if the user exists and the password matches
 	if (user && user.password === password) {
-		return "1";
+		console.log("Mathched")
+		return user;
+	
 	} else {
 		return "0";
 	}

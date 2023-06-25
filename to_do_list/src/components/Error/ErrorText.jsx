@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
-
+import "./Error.scss";
 export const ErrorText = (props) => {
 	useEffect(() => {
 		const toastId = toast("Fields cannot be blank");
@@ -15,9 +15,8 @@ export const ErrorText = (props) => {
 	}
 
 	return (
-		<div className='card'>
-			<Toaster />
-			<button onClick={handleExitButton}>Go back</button>
-		</div>
+		<button className='error_btn' onClick={handleExitButton}>
+			Go back
+		</button>
 	);
 };
