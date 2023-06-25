@@ -26,3 +26,14 @@ export const sendNote = async (note, id) => {
 		return 1;
 	}
 };
+
+export const deleteNote = async (id) => {
+	const updatedNotes = await prisma.note.delete({
+		where: {
+			id: id,
+		},
+	});
+
+	console.log(updatedNotes);
+	return updatedNotes;
+};

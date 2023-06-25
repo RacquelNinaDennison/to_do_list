@@ -3,12 +3,49 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
 import { ErrorText } from "../Error/ErrorText";
-import toast, { Toaster } from "react-hot-toast";
+import { SingleNote } from "../SingleNote/SingleNote";
+import { useQuery, useQueryClient, useMutation } from "react-query";
+import axios from "axios";
+
+const getNotes = async () => {
+	const userId = localStorage.getItem("userID");
+	const response = await axios.get(`http://localhost:3000/note/${userId}`);
+	console.log(response.data);
+	return response.data;
+};
 
 const CreateArea = (props) => {
+	const queryClient = useQueryClient();
 	const [note, setNote] = useState({ title: "", content: "" });
 	const [takingNote, setTakingNote] = useState(false);
 	const [emptyField, setEmptyField] = useState(false);
+
+	const deleteMutation = useMutation(
+		(id) => {
+			console.log("Id in the mutation " + id);
+			return axios.delete(`http://localhost:3000/note/${id}`);
+		},
+		{
+			onSuccess: (data) => {
+				queryClient.invalidateQueries(["getNotes"]);
+			},
+			onError: ({ message }) => {
+				console.log(message);
+			},
+		}
+	);
+	const { isLoading, error, data, isSuccess } = useQuery("getNotes", getNotes);
+	if (isLoading) {
+		return <h1>Loading</h1>;
+	}
+
+	if (error) {
+		return "Error";
+	}
+
+	const handleDelete = (id) => {
+		deleteMutation.mutateAsync(id);
+	};
 
 	function handleNoteMaking(event) {
 		const { name, value } = event.target;
@@ -62,6 +99,16 @@ const CreateArea = (props) => {
 					</Fab>
 				</Zoom>
 			</form>
+
+			{data.notes.map((note) => (
+				<SingleNote
+					title={note.title}
+					content={note.content}
+					id={note.id}
+					delete={handleDelete}
+					key={note.id}
+				/>
+			))}
 		</div>
 	) : (
 		<div>
