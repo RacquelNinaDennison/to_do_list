@@ -16,11 +16,11 @@ export const createUser = async (req, res) => {
 
 export const checkUser = async (req, res) => {
 	const { name, password } = req.body;
-	console.log(req.body);
 
 	const user = await validateUser(name, password);
 	console.log(user);
-	if (user) {
+	console.log("Checking the user");
+	if (user != null) {
 		console.log("Hello");
 		res.json({ status: "1", user: user });
 	} else {

@@ -2,7 +2,7 @@ import React from "react";
 
 export const SingleNote = (props) => {
 	const handleDelete = () => {
-        console.log(props.id)
+		console.log(props.id);
 		props.delete(props.id);
 		console.log("in single");
 	};

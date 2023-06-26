@@ -20,13 +20,12 @@ export const validateUser = async (name, password) => {
 			name: name,
 		},
 	});
-	console.log(user)
+	console.log(user);
 	// Check if the user exists and the password matches
 	if (user && user.password === password) {
-		console.log("Mathched")
+		console.log("Mathched");
 		return user;
-	
 	} else {
-		return "0";
+		return null;
 	}
 };

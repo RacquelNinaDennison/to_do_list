@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import Fab from "@mui/material/Fab";
-import Zoom from "@mui/material/Zoom";
 import { ErrorText } from "../Error/ErrorText";
 import { SingleNote } from "../SingleNote/SingleNote";
 import { useQuery, useQueryClient, useMutation } from "react-query";
@@ -20,15 +17,11 @@ const CreateArea = (props) => {
 	const [takingNote, setTakingNote] = useState(false);
 	const [emptyField, setEmptyField] = useState(false);
 	const userId = localStorage.getItem("userID");
-
-	const { isLoading, error, data, isSuccess } = useQuery("getNotes", getNotes);
-	if (isLoading) {
-		return <h1>Loading</h1>;
-	}
-
-	if (error) {
-		return "Error";
-	}
+	console.log("The user id is " + userId);
+	const { isLoading, error, data, isSuccess } = useQuery(
+		["getNotes"],
+		getNotes
+	); // needs to be changed to test the state
 
 	const createNoteMutation = useMutation(
 		(content) => {
@@ -40,6 +33,22 @@ const CreateArea = (props) => {
 			},
 			onError: (message) => {
 				console.log(message);
+			},
+			onMutate: async (newListItem) => {
+				await queryClient.cancelQueries({ queryKey: ["getNotes"] });
+				const previousToDoList = queryClient.getQueryData(["getNotes"]);
+				queryClient.setQueryData(["getNotes"], (old) => [
+					...old.notes,
+					newListItem,
+				]);
+
+				// returning old value if it fails ?
+				return { previousToDoList };
+			},
+
+			onSettled: () => {
+				// this queries the current set of notes that have been saved
+				queryClient.invalidateQueries({ queryKey: ["getNotes"] });
 			},
 		}
 	);
@@ -59,6 +68,15 @@ const CreateArea = (props) => {
 		}
 	);
 
+	function handleButtonSubmission(event) {
+		event.preventDefault();
+		if (note.title.trim() == "" || note.content.trim() == "") {
+			setEmptyField(true);
+		}
+		createNoteMutation.mutate(note); // call the mutation to update the note
+		setNote({ title: "", content: "" });
+	}
+
 	const handleDelete = (id) => {
 		deleteMutation.mutateAsync(id);
 	};
@@ -73,17 +91,7 @@ const CreateArea = (props) => {
 		});
 	}
 
-	function handleButtonSubmission(event) {
-		event.preventDefault();
-		if (note.title.trim() !== "" || note.content.trim() !== "") {
-			createNoteMutation.mutate(note); // call the mutation to update the note
-			setNote({ title: "", content: "" });
-		} else {
-			setEmptyField(true);
-		}
-	}
 	function exitButton() {
-		console.log("exit burron ");
 		setEmptyField(false);
 	}
 
@@ -109,14 +117,9 @@ const CreateArea = (props) => {
 					/>
 				)}
 
-				<Zoom in={takingNote}>
-					<Fab onClick={handleButtonSubmission}>
-						<AddCircleOutlineIcon />
-					</Fab>
-				</Zoom>
+				<button onClick={handleButtonSubmission}>+</button>
 			</form>
-
-			{data.notes.map((note) => (
+			{data?.notes?.map((note) => (
 				<SingleNote
 					title={note.title}
 					content={note.content}

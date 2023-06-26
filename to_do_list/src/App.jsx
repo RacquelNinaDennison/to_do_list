@@ -9,7 +9,7 @@ import Login from "./components/Login/Login";
 
 function App() {
 	const [userId, setUserId] = useState(null);
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(null);
 
 	const mutationSign = useMutation(
 		async (login) => {
@@ -17,7 +17,8 @@ function App() {
 		},
 		{
 			onSuccess: (data) => {
-				if (data.data.status === "1") {
+				console.log(data);
+				if (data.data.status === "1" && data.data.user != null) {
 					localStorage.setItem("isLoggedIn", "1");
 					localStorage.setItem("userID", data.data.user.id);
 					console.log("Set LocalStrorage");
@@ -47,10 +48,28 @@ function App() {
 
 	useEffect(() => {
 		const isLoggedIn = localStorage.getItem("isLoggedIn");
+		const userId = localStorage.getItem("userID");
+		console.log(isLoggedIn);
 		if (isLoggedIn === "1") {
-			setIsLoggedIn(true);
+			setIsLoggedIn("1");
+			console.log(isLoggedIn);
+			if (userId) {
+				setUserId(userId);
+			}
 		}
 	}, []);
+	useEffect(() => {
+		const isLoggedIn = localStorage.getItem("isLoggedIn");
+		const userId = localStorage.getItem("userID");
+		console.log(isLoggedIn);
+		if (isLoggedIn === "1") {
+			setIsLoggedIn("1");
+			console.log(isLoggedIn);
+			if (userId) {
+				setUserId(userId);
+			}
+		}
+	}, [mutationSign, mutationRegister]);
 
 	const loginHandler = (email, password) => {
 		mutationSign.mutate({ name: email, password: password });
@@ -68,9 +87,11 @@ function App() {
 	return (
 		<div>
 			<Toaster />
-			{isLoggedIn && (
+			<Header logoutHandler={logoutHandler} />
+			{console.log(isLoggedIn)}
+			{console.log(userId)}
+			{isLoggedIn === "1" && userId != null && (
 				<>
-					<Header logoutHandler={logoutHandler} />
 					<CreateArea userId={userId} />
 				</>
 			)}
